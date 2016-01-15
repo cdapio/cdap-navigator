@@ -17,16 +17,25 @@
 package co.cask.cdap.metadata;
 
 import co.cask.cdap.api.flow.AbstractFlow;
+import co.cask.cdap.metadata.config.NavigatorAppConfig;
 
 /**
  * Metadata Flow.
  */
 public final class MetadataFlow extends AbstractFlow {
+  public static final String FLOW_NAME = "MetadataFlow";
+  private final NavigatorAppConfig navigatorAppConfig;
+
+  public MetadataFlow(NavigatorAppConfig navigatorAppConfig) {
+    this.navigatorAppConfig = navigatorAppConfig;
+  }
 
   @Override
   public void configure() {
-    setName("MetadataFlow");
+    setName(FLOW_NAME);
     setDescription("Flow that subscribes to Metadata changes and propagates the same to Navigator");
+    MetadataConsumer.verifyConfig(navigatorAppConfig.getMetadataKafkaConfig());
+    NavigatorPublisher.verifyConfig(navigatorAppConfig.getNavigatorConfig());
     addFlowlet("metadataConsumer", new MetadataConsumer());
     addFlowlet("navigatorPublisher", new NavigatorPublisher());
     connect("metadataConsumer", "navigatorPublisher");

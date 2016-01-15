@@ -17,21 +17,19 @@
 package co.cask.cdap.metadata;
 
 import co.cask.cdap.api.app.AbstractApplication;
-import co.cask.cdap.api.dataset.lib.KeyValueTable;
+import co.cask.cdap.metadata.config.NavigatorAppConfig;
 
 /**
  * CDAP Application that subscribes to Metadata information that are published to a Kafka Broker/Topic, by the CDAP
  * platform, and pushes it to Cloudera Navigator.
  */
-public class NavigatorApp extends AbstractApplication {
+public class NavigatorApp extends AbstractApplication<NavigatorAppConfig> {
 
   @Override
   public void configure() {
     setName("NavigatorIntegration");
     setDescription("Application that pushes metadata to Navigator");
-    addFlow(new MetadataFlow());
-    // TODO: Get the name of the kvTable from appConfig
-    createDataset("kafkaOffsets", KeyValueTable.class);
+    addFlow(new MetadataFlow(getConfig()));
+    addService("NavigatorQuery", new NavigatorQueryHandler());
   }
-
 }

@@ -16,14 +16,14 @@
 
 package co.cask.cdap.metadata;
 
+import co.cask.cdap.metadata.config.MetadataKafkaConfig;
+import co.cask.cdap.metadata.config.NavigatorAppConfig;
+import co.cask.cdap.metadata.config.NavigatorConfig;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.TestBase;
 import co.cask.cdap.test.TestConfiguration;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Test for {@link NavigatorApp}.
@@ -34,9 +34,13 @@ public class NavigatorAppTest extends TestBase {
   public static final TestConfiguration CONFIG = new TestConfiguration("explore.enabled", false);
 
   @Test
-  public void test() throws TimeoutException, InterruptedException, IOException {
-    // Deploy the HelloWorld application
-    ApplicationManager appManager = deployApplication(NavigatorApp.class);
+  public void test() throws Exception {
+    // Deploy the Navigator Application
+    NavigatorConfig navigatorConfig = new NavigatorConfig("naviclus.dev.continuuity.net", "user", "pass");
+    MetadataKafkaConfig metadataKafkaConfig = new MetadataKafkaConfig(null, "source.dev.continuuity.net:9092",
+                                                                      "cdap-metadata-updates", 10, null);
+    NavigatorAppConfig appConfig = new NavigatorAppConfig(navigatorConfig, metadataKafkaConfig);
+    ApplicationManager appManager = deployApplication(NavigatorApp.class, appConfig);
     appManager.stopAll();
   }
 }
