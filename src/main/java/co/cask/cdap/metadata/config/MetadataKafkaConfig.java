@@ -16,6 +16,7 @@
 
 package co.cask.cdap.metadata.config;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 /**
@@ -24,6 +25,8 @@ import com.google.common.base.Strings;
 public class MetadataKafkaConfig {
 
   private static final String DEFAULT_OFFSET_DATASET = "kafkaOffset";
+  private static final String DEFAULT_TOPIC = "cdap-metadata-updates";
+  private static final Integer DEFAULT_PARTITIONS = 10;
 
   private final String zookeeperString;
   private final String brokerString;
@@ -50,11 +53,11 @@ public class MetadataKafkaConfig {
   }
 
   public String getTopic() {
-    return topic;
+    return Strings.isNullOrEmpty(topic) ? DEFAULT_TOPIC : topic;
   }
 
   public Integer getNumPartitions() {
-    return numPartitions;
+    return Objects.firstNonNull(numPartitions, DEFAULT_PARTITIONS);
   }
 
   public String getOffsetDataset() {

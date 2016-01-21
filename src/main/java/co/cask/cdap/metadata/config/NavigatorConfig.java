@@ -35,13 +35,13 @@ public class NavigatorConfig {
   private final Integer navigatorPort;
   private final boolean autocommit;
   private final String namespace;
-  private final String applicationURI;
+  private final String applicationURL;
   private final String fileFormat;
   private final String navigatorURL;
   private final String metadataParentURI;
 
   public NavigatorConfig(String navigatorHostName, String username, String password, Integer navigatorPort,
-                         Boolean autocommit, String namespace, String applicationURI, String fileFormat,
+                         Boolean autocommit, String namespace, String applicationURL, String fileFormat,
                          String navigatorURL, String metadataParentURI) {
     this.navigatorHostName = navigatorHostName;
     this.username = username;
@@ -49,7 +49,7 @@ public class NavigatorConfig {
     this.navigatorPort = navigatorPort;
     this.autocommit = autocommit;
     this.namespace = namespace;
-    this.applicationURI = applicationURI;
+    this.applicationURL = applicationURL;
     this.fileFormat = fileFormat;
     this.navigatorURL = navigatorURL;
     this.metadataParentURI = metadataParentURI;
@@ -83,7 +83,7 @@ public class NavigatorConfig {
   }
 
   public String getApplicationURL() {
-    return Strings.isNullOrEmpty(applicationURI) ? generateApplicationURL(navigatorHostName) : applicationURI;
+    return Strings.isNullOrEmpty(applicationURL) ? generateApplicationURL(navigatorHostName) : applicationURL;
   }
 
   public String getFileFormat() {

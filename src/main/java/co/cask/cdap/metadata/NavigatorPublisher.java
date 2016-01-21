@@ -24,6 +24,7 @@ import co.cask.cdap.metadata.config.NavigatorConfig;
 import co.cask.cdap.metadata.entity.ApplicationEntity;
 import co.cask.cdap.metadata.entity.ArtifactEntity;
 import co.cask.cdap.metadata.entity.DatasetEntity;
+import co.cask.cdap.metadata.entity.NavigatorClientWriteException;
 import co.cask.cdap.metadata.entity.ProgramEntity;
 import co.cask.cdap.metadata.entity.StreamEntity;
 import co.cask.cdap.metadata.entity.StreamViewEntity;
@@ -40,6 +41,7 @@ import co.cask.cdap.proto.id.StreamViewId;
 import co.cask.cdap.proto.metadata.MetadataChangeRecord;
 import co.cask.cdap.proto.metadata.MetadataRecord;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
+import com.cloudera.nav.sdk.client.writer.ResultSet;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -96,17 +98,23 @@ public final class NavigatorPublisher extends AbstractFlowlet {
   }
 
   @ProcessInput
-  public void process(String serializedMetaData) {
+  public void process(String serializedMetaData) throws NavigatorClientWriteException {
     MetadataChangeRecord record = GSON.fromJson(serializedMetaData, MetadataChangeRecord.class);
     MetadataChangeRecord.MetadataDiffRecord metadataDiffRecord = record.getChanges();
     MetadataRecord addition = metadataDiffRecord.getAdditions();
     MetadataRecord deletion = metadataDiffRecord.getDeletions();
     Id.NamespacedId entityId = addition.getEntityId();
+    Entity entity = null;
     try {
-      navigatorPlugin.write(convertToEntity(entityId, addition.getTags(), addition.getProperties(),
-                                            deletion.getTags(), deletion.getProperties()));
+      entity = convertToEntity(entityId, addition.getTags(), addition.getProperties(), deletion.getTags(),
+                               deletion.getProperties());
     } catch (UnsupportedEntityException ex) {
       LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getIdType(), entityId);
+    }
+
+    ResultSet resultSet = navigatorPlugin.write(entity);
+    if (resultSet.hasErrors()) {
+      throw new NavigatorClientWriteException(entity, resultSet);
     }
   }
 
