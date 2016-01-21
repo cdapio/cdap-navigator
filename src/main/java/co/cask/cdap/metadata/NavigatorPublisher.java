@@ -22,17 +22,21 @@ import co.cask.cdap.api.flow.flowlet.FlowletContext;
 import co.cask.cdap.metadata.config.NavigatorAppConfig;
 import co.cask.cdap.metadata.config.NavigatorConfig;
 import co.cask.cdap.metadata.entity.ApplicationEntity;
+import co.cask.cdap.metadata.entity.ArtifactEntity;
 import co.cask.cdap.metadata.entity.DatasetEntity;
 import co.cask.cdap.metadata.entity.ProgramEntity;
 import co.cask.cdap.metadata.entity.StreamEntity;
+import co.cask.cdap.metadata.entity.StreamViewEntity;
 import co.cask.cdap.metadata.entity.UnsupportedEntityException;
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.codec.NamespacedIdCodec;
 import co.cask.cdap.proto.element.EntityType;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.DatasetId;
+import co.cask.cdap.proto.id.NamespacedArtifactId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
+import co.cask.cdap.proto.id.StreamViewId;
 import co.cask.cdap.proto.metadata.MetadataChangeRecord;
 import co.cask.cdap.proto.metadata.MetadataRecord;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
@@ -123,6 +127,15 @@ public final class NavigatorPublisher extends AbstractFlowlet {
       case STREAM:
         Id.Stream streamId = (Id.Stream) entityId;
         entity = new StreamEntity(new StreamId(streamId.getNamespaceId(), streamId.getId()));
+        break;
+      case ARTIFACT:
+        Id.Artifact artifactId = (Id.Artifact) entityId;
+        entity = new ArtifactEntity(new NamespacedArtifactId(artifactId.getNamespace().getId(), artifactId.getId(),
+                                                             artifactId.getVersion().getVersion()));
+        break;
+      case STREAM_VIEW:
+        Id.Stream.View viewId = (Id.Stream.View) entityId;
+        entity = new StreamViewEntity(new StreamViewId(viewId.getNamespaceId(), viewId.getStreamId(), viewId.getId()));
         break;
       default:
         throw new UnsupportedEntityException(entityType);

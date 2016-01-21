@@ -44,6 +44,15 @@ public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, B
   private OutputEmitter<String> emitter;
   private MetadataKafkaConfig metadataKafkaConfig;
 
+  private String offsetDatasetName;
+
+  public MetadataConsumer(MetadataKafkaConfig metadataKafkaConfig) {
+    this.offsetDatasetName = metadataKafkaConfig.getOffsetDataset();
+  }
+
+  public MetadataConsumer() {
+  }
+
   public static void verifyConfig(MetadataKafkaConfig metadataKafkaConfig) {
     // Verify if the configuration is right
     if (Strings.isNullOrEmpty(metadataKafkaConfig.getBrokerString()) &&
@@ -64,10 +73,7 @@ public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, B
   @Override
   protected void configure() {
     super.configure();
-    NavigatorAppConfig appConfig = GSON.fromJson(getContext().getApplicationSpecification().getConfiguration(),
-                                                 NavigatorAppConfig.class);
-    metadataKafkaConfig = appConfig.getMetadataKafkaConfig();
-    createDataset(metadataKafkaConfig.getOffsetDataset(), KeyValueTable.class);
+    createDataset(offsetDatasetName, KeyValueTable.class);
   }
 
   @Override
