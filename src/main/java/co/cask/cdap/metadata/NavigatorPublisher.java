@@ -41,6 +41,7 @@ import co.cask.cdap.proto.metadata.MetadataChangeRecord;
 import co.cask.cdap.proto.metadata.MetadataRecord;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
 import com.cloudera.nav.sdk.model.entities.Entity;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,8 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Deserializes {@link MetadataChangeRecord} and creates Navigator {@link Entity}s
- * and pushes them to Navigator.
+ * Deserializes {@link MetadataChangeRecord} and creates Navigator {@link Entity}s and writes them to Navigator.
  */
 public final class NavigatorPublisher extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(NavigatorPublisher.class);
@@ -63,7 +63,12 @@ public final class NavigatorPublisher extends AbstractFlowlet {
   private NavigatorConfig navigatorConfig;
   private NavigatorPlugin navigatorPlugin;
 
-  public static void verifyConfig(NavigatorConfig navigatorConfig) {
+  public NavigatorPublisher(NavigatorConfig navigatorConfig) {
+    verifyConfig(navigatorConfig);
+  }
+
+  @VisibleForTesting
+  static void verifyConfig(NavigatorConfig navigatorConfig) {
     if (Strings.isNullOrEmpty(navigatorConfig.getNavigatorHostName())) {
       throw new IllegalArgumentException("Navigator Hostname should be provided!");
     }
@@ -101,7 +106,7 @@ public final class NavigatorPublisher extends AbstractFlowlet {
       navigatorPlugin.write(convertToEntity(entityId, addition.getTags(), addition.getProperties(),
                                             deletion.getTags(), deletion.getProperties()));
     } catch (UnsupportedEntityException ex) {
-      LOG.warn("EntityType {} of Entity {} not supported. So ignoring this record.", entityId.getIdType(), entityId);
+      LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getIdType(), entityId);
     }
   }
 

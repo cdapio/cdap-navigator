@@ -20,7 +20,8 @@ import co.cask.cdap.api.flow.AbstractFlow;
 import co.cask.cdap.metadata.config.NavigatorAppConfig;
 
 /**
- * Metadata Flow.
+ * Metadata Flow that contains two flowlets - metadataConsumer subscribes to Metadata Kafka messages and forwards it to
+ * navigatorPublisher flowlet that writes that metadata info to Navigator.
  */
 public final class MetadataFlow extends AbstractFlow {
   public static final String FLOW_NAME = "MetadataFlow";
@@ -34,10 +35,8 @@ public final class MetadataFlow extends AbstractFlow {
   public void configure() {
     setName(FLOW_NAME);
     setDescription("Flow that subscribes to Metadata changes and propagates the same to Navigator");
-    MetadataConsumer.verifyConfig(navigatorAppConfig.getMetadataKafkaConfig());
-    NavigatorPublisher.verifyConfig(navigatorAppConfig.getNavigatorConfig());
     addFlowlet("metadataConsumer", new MetadataConsumer(navigatorAppConfig.getMetadataKafkaConfig()));
-    addFlowlet("navigatorPublisher", new NavigatorPublisher());
+    addFlowlet("navigatorPublisher", new NavigatorPublisher(navigatorAppConfig.getNavigatorConfig()));
     connect("metadataConsumer", "navigatorPublisher");
   }
 }
