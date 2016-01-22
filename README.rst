@@ -10,13 +10,18 @@ development platform for the Hadoop ecosystem that provides developers with data
 application abstractions to simplify and accelerate application development.
 
 Navigator Integration App is one such application built by the team at Cask for bridging CDAP Metadata
-with Cloudera's data managemnet tool, Navigator. It's a CDAP native application that uses a real-time Flow to
-fetch the CDAP Metadata and write it to Navigator.
+with Cloudera's data management tool, Navigator. The Navigator Integration App is a CDAP-native application 
+that uses a real-time Flow to fetch the CDAP Metadata and write it to Navigator.
 
-- `Overview of CDAP Metadata <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata>`__
+Resources
+---------
+- `Overview of CDAP Metadata
+  <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata>`__
 - `Cloudera Navigator <http://www.cloudera.com/products/cloudera-navigator.html>`__
-- `Real-time processing using Flows <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/flows-flowlets/index.html>`__
-- `Kafka Flowlet Library <https://github.com/caskdata/cdap-packs/tree/develop/cdap-kafka-pack/cdap-kafka-flow>`__
+- `Real-time processing using Flows
+  <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/flows-flowlets/index.html>`__
+- `Kafka Flowlet Library 
+  <https://github.com/caskdata/cdap-packs/tree/develop/cdap-kafka-pack/cdap-kafka-flow>`__
 - `Navigator SDK <https://github.com/cloudera/navigator-sdk>`__
 
 
@@ -25,15 +30,14 @@ Getting Started
 
 Prerequisites
 -------------
-To use Navigator Integration App, you need CDAP version 3.2.1 or higher and Navigator version of 2.4.0 or greater.
+To use Navigator Integration App, you'll need CDAP version 3.2.1 or higher, and Navigator version 2.4.0 or higher.
 
-Metadata publishing to Kafka
+Metadata Publishing to Kafka
 ----------------------------
 Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP Metadata system publishes
-the metadata updates. Hence, before using this application, the user should enable publishing of metadata updates to
-Kafka.
-
-- `Enable Metadata Update Notifications <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata-update-notifications>`__
+the metadata updates. Hence, before using this application, you should enable publishing of metadata updates to
+Kafka, as described in the CDAP documentation `Enable Metadata Update Notifications
+<http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata-update-notifications>`__.
 
 Building Plugins
 ----------------
@@ -43,12 +47,12 @@ You get started by building directly from the latest source code::
   cd cdap-navigator
   mvn clean package
 
-After the build completes, you will have a JAR under: ``target/`` directory.
+After the build completes, you will have a JAR under the ``target/`` directory.
 
-Deploying Navigator Integration App
------------------------------------
+Deploying the Navigator Integration App
+---------------------------------------
 
-Step 1: Start by deploying the artifact JAR built using from source or download the released JAR from Maven.
+Step 1: Start by deploying the artifact JAR (either built from source or by downloading the released JAR from Maven).
 Deploy the JAR using the CDAP CLI::
 
   > load artifact <target/navigator-<version>-jar>
@@ -56,73 +60,81 @@ Deploy the JAR using the CDAP CLI::
 
 Step 2: Create an application configuration file that contains:
 
-- Kafka Metadata Config: Kafka Consumer Flowlet configuration information (info about where we can fetch metadata updates)
-- Navigator Config: Information required by the Navigator Client to publish data to Navigator
+- Kafka Metadata Config (``metadataKafkaConfig``): Kafka Consumer Flowlet configuration information
+  (info about where we can fetch metadata updates)
+- Navigator Config (``navigatorConfig``): Information required by the Navigator Client to publish data to Navigator
 
 Sample Application Configuration file::
 
-{
-	"config": {
-		"metadataKafkaConfig": {
-			"zookeeperString": "hostname:2181/cdap/kafka"
-		},
-		"navigatorConfig": {
-			"navigatorHostName": "navigatormetadataserver",
-			"username": "abcd",
-			"password": "1234"
-		}
-	}
-}
+  {
+    "config": {
+      "metadataKafkaConfig": {
+        "zookeeperString": "hostname:2181/cdap/kafka"
+      },
+      "navigatorConfig": {
+        "navigatorHostName": "navigatormetadataserver",
+        "username": "abcd",
+        "password": "1234"
+      }
+    }
+  }
 
-Metadata Kafka Config:
+**Metadata Kafka Config:**
 
-This key contains a property map that contains the following properties:
-
-Required Properties:
-- ``zookeeperString`` : Kafka Zookeeper string that can be used to subscribe to the CDAP metadata updates
-- ``brokerString`` : Kafka Broker string to which CDAP metadata is published
-
-Note: The user can specify either the zookeeperString or brokerString.
-
-Optional Properties:
-- ``topic`` : Kafka Topic to which CDAP Metadata updates are published. Default is ``cdap-metadata-updates`` which
-corresponds to the default topic used in CDAP for Metadata updates.
-- ``numPartitions`` : Number of Kafka partitions. Default is set to ``10``.
-- ``offsetDataset`` : Name of the dataset where Kafka offsets are stored. Default is ``kafkaOffset``.
-
-Navigator Config:
-
-This key contains a property map that contains the following properties:
+This key contains a property map with these properties:
 
 Required Properties:
-- ``navigatorHostName`` : Navigator Metadata Server hostname
-- ``username`` : Navigator Metadata Server username
-- ``password`` : Navigator Metadata Server password
+
+- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP metadata updates
+- ``brokerString``: Kafka Broker string to which CDAP metadata is published
+
+*Note:* Specify either the ``zookeeperString`` or the ``brokerString``.
 
 Optional Properties:
-- ``navigatorPort`` : Navigator Metadata Server port. Default is ``7187``.
-- ``autocommit`` : Navigator SDK's autocommit property. Default is ``false``.
-- ``namespace`` : Navigator namespace. Default is ``CDAP``.
-- ``applicationURL`` : Navigator Application URL. Default is ``http://navigatorHostName``.
-- ``fileFormat`` : Navigator File Format. Default is ``JSON``.
-- ``navigatorURL`` : Navigator URL. Default is ``http://navigatorHostName:navigatorPort/api/v8``.
-- ``metadataParentURI`` : Navigator Metadata Parent URI. Default is ``http://navigatorHostName:navigatorPort/api/v8/metadata/plugin``.
 
-Step 3: Create a CDAP Application by providing a configuration file::
+- ``topic``: Kafka Topic to which CDAP Metadata updates are published; default is ``cdap-metadata-updates`` which
+  corresponds to the default topic used in CDAP for Metadata updates
+- ``numPartitions``: Number of Kafka partitions; default is set to ``10``
+- ``offsetDataset``: Name of the dataset where Kafka offsets are stored; default is ``kafkaOffset``
+
+**Navigator Config:**
+
+This key contains a property map with these properties:
+
+Required Properties:
+
+- ``navigatorHostName``: Navigator Metadata Server hostname
+- ``username``: Navigator Metadata Server username
+- ``password``: Navigator Metadata Server password
+
+Optional Properties:
+
+- ``navigatorPort``: Navigator Metadata Server port; default is ``7187``
+- ``autocommit``: Navigator SDK's autocommit property; default is ``false``
+- ``namespace``: Navigator namespace; default is ``CDAP``
+- ``applicationURL``: Navigator Application URL; default is ``http://navigatorHostName``
+- ``fileFormat``: Navigator File Format; default is ``JSON``
+- ``navigatorURL``: Navigator URL; default is ``http://navigatorHostName:navigatorPort/api/v8``
+- ``metadataParentURI``: Navigator Metadata Parent URI; default is ``http://navigatorHostName:navigatorPort/api/v8/metadata/plugin``
+
+Step 3: Create a CDAP Application by providing the configuration file::
 
   > create app metaApp navigator 1.0.0 USER appconfig.txt
 
-Step 4: Start the MetadataFlow::
+Starting the Navigator Integration App
+--------------------------------------
+
+To start the MetadataFlow::
 
   > start flow metaApp.MetadataFlow
 
 You should now be able to view CDAP Metadata in the Navigator UI. Note that all CDAP Entities use ``SDK`` as
-the SourceType and uses ``CDAP`` as the namespace (this can be changed). Since Navigator SDK doesn't allow adding
-new EntityTypes, we have used the following mapping:
+the SourceType and use ``CDAP`` as the namespace (this can be changed). Since Navigator SDK doesn't allow adding
+new EntityTypes, we have used this mapping:
 
 +-------------------+-----------------------+
 | CDAP EntityType   | Navigator EntityType  |
-+===========================================+
++===================+=======================+
 | Application       | File                  |
 +-------------------+-----------------------+
 | Artifact          | File                  |
@@ -171,3 +183,5 @@ Cask is a trademark of Cask Data, Inc. All rights reserved.
 
 Apache, Apache HBase, and HBase are trademarks of The Apache Software Foundation. Used with
 permission. No endorsement by The Apache Software Foundation is implied by the use of these marks.
+
+Cloudera Navigator is a trademark of Cloudera.
