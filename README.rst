@@ -30,7 +30,7 @@ Getting Started
 
 Prerequisites
 -------------
-To use Navigator Integration App, you'll need CDAP version 3.2.1 or higher, and Navigator version 2.4.0 or higher.
+To use Navigator Integration App, you need CDAP version 3.3.0 or higher and Navigator version of 2.4.0 or greater.
 
 Metadata Publishing to Kafka
 ----------------------------
