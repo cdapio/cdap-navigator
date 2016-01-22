@@ -55,7 +55,7 @@ Deploying the Navigator Integration App
 Step 1: Start by deploying the artifact JAR (either built from source or by downloading the released JAR from Maven).
 Deploy the JAR using the CDAP CLI::
 
-  > load artifact <target/navigator-<version>-jar>
+  > load artifact target/navigator-<version>-jar
 
 
 Step 2: Create an application configuration file that contains:
