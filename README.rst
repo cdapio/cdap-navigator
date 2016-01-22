@@ -82,7 +82,7 @@ Required Properties:
 - ``zookeeperString`` : Kafka Zookeeper string that can be used to subscribe to the CDAP metadata updates
 - ``brokerString`` : Kafka Broker string to which CDAP metadata is published
 
-Note: The user can specify either zookeeperString or brokerString.
+Note: The user can specify either the zookeeperString or brokerString.
 
 Optional Properties:
 - ``topic`` : Kafka Topic to which CDAP Metadata updates are published. Default is ``cdap-metadata-updates`` which
@@ -116,18 +116,25 @@ Step 4: Start the MetadataFlow::
 
   > start flow metaApp.MetadataFlow
 
-You should now be able to view CDAP Metadata in Navigator UI. Note that all CDAP Entities use ``SDK`` as
+You should now be able to view CDAP Metadata in the Navigator UI. Note that all CDAP Entities use ``SDK`` as
 the SourceType and uses ``CDAP`` as the namespace (this can be changed). Since Navigator SDK doesn't allow adding
 new EntityTypes, we have used the following mapping:
 
-CDAP EntityType  |  Navigator EntityType
-----------------------------------------
-Application          File
-Artifact             File
-Dataset              Dataset
-Program              Operation
-Stream               Dataset
-StreamView           Table
++-------------------+-----------------------+
+| CDAP EntityType   | Navigator EntityType  |
++===========================================+
+| Application       | File                  |
++-------------------+-----------------------+
+| Artifact          | File                  |
++-------------------+-----------------------+
+| Dataset           | Dataset               |
++-------------------+-----------------------+
+| Program           | Operation             |
++-------------------+-----------------------+
+| Stream            | Dataset               |
++-------------------+-----------------------+
+| StreamView        | Table                 |
++-------------------+-----------------------+
 
 Mailing Lists
 -------------
