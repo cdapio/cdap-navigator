@@ -16,24 +16,25 @@
 
 package co.cask.cdap.metadata.entity;
 
-import co.cask.cdap.api.app.Application;
-import co.cask.cdap.proto.id.ApplicationId;
-import com.cloudera.nav.sdk.model.MD5IdGenerator;
+import co.cask.cdap.proto.id.StreamViewId;
 import com.cloudera.nav.sdk.model.SourceType;
-import com.cloudera.nav.sdk.model.annotations.MClass;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
 /**
- * CDAP {@link Application} {@link Entity}.
+ * CDAP StreamView {@link Entity}
  */
-@MClass(model = "cdap_application_entity")
-public class ApplicationEntity extends Entity {
-  private final ApplicationId appId;
+public class StreamViewEntity extends Entity {
+  private final StreamViewId streamViewId;
 
-  public ApplicationEntity(ApplicationId appId) {
-    this.appId = appId;
-    setName(appId.toString());
+  public StreamViewEntity(StreamViewId streamViewId) {
+    this.streamViewId = streamViewId;
+    setName(streamViewId.toString());
+  }
+
+  @Override
+  public String generateId() {
+    return null;
   }
 
   @Override
@@ -43,11 +44,6 @@ public class ApplicationEntity extends Entity {
 
   @Override
   public EntityType getEntityType() {
-    return EntityType.FILE;
-  }
-
-  @Override
-  public String generateId() {
-    return MD5IdGenerator.generateIdentity(appId.toString());
+    return EntityType.TABLE;
   }
 }

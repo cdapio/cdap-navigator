@@ -20,14 +20,15 @@ import co.cask.cdap.api.dataset.Dataset;
 import co.cask.cdap.proto.id.DatasetId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
+import com.cloudera.nav.sdk.model.annotations.MClass;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
 /**
  * CDAP {@link Dataset} {@link Entity}
  */
+@MClass(model = "cdap_dataset_entity")
 public class DatasetEntity extends Entity {
-
   private final DatasetId datasetId;
 
   public DatasetEntity(DatasetId datasetId) {
@@ -37,7 +38,7 @@ public class DatasetEntity extends Entity {
 
   @Override
   public SourceType getSourceType() {
-    return SourceType.HIVE;
+    return SourceType.SDK;
   }
 
   @Override
@@ -47,6 +48,6 @@ public class DatasetEntity extends Entity {
 
   @Override
   public String generateId() {
-    return MD5IdGenerator.generateIdentity(datasetId.getNamespace(), datasetId.getDataset());
+    return MD5IdGenerator.generateIdentity(datasetId.toString());
   }
 }

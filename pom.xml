@@ -20,7 +20,7 @@
 
   <groupId>co.cask.cdap.metadata</groupId>
   <artifactId>navigator</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Navigator Metadata Application</name>
@@ -28,20 +28,82 @@
   <properties>
     <app.main.class>co.cask.cdap.metadata.NavigatorApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>3.3.0-SNAPSHOT</cdap.version>
+    <cdap.version>3.3.0</cdap.version>
     <navigator.client.version>1.0</navigator.client.version>
+    <commons.codec.version>1.4</commons.codec.version>
+    <commons.net.version>3.1</commons.net.version>
+    <httpcomponents.client.version>4.2.5</httpcomponents.client.version>
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>13.0.1</guava.version>
     <junit.version>4.11</junit.version>
     <kafka.pack.version>0.9.0-SNAPSHOT</kafka.pack.version>
   </properties>
 
+  <distributionManagement>
+    <repository>
+      <id>sonatype.release</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype.snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>cask</id>
+      <url>http://cask.co</url>
+    </site>
+  </distributionManagement>
+
+  <scm>
+    <connection>scm:git:https://github.com/caskdata/cdap-navigator.git</connection>
+    <developerConnection>scm:git:git@github.com:caskdata/cdap-navigator.git</developerConnection>
+    <url>https://github.com/caskdata/cdap-navigator.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <organization>
+    <name>Cask Data, Inc.</name>
+    <url>http://cask.co</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Cask Data</name>
+      <email>cdap-user@googlegroups.com</email>
+      <organization>Cask Data, Inc.</organization>
+      <organizationUrl>http://www.cdap.io</organizationUrl>
+    </developer>
+  </developers>
+
   <repositories>
     <repository>
       <id>sonatype</id>
       <url>https://oss.sonatype.org/content/groups/public</url>
     </repository>
+    <repository>
+      <id>cdh-dependencies.releases.repo</id>
+      <url>https://repository.cloudera.com/artifactory/libs-release-local</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>cdh.snapshots.repo</id>
+      <url>https://repository.cloudera.com/artifactory/libs-snapshot-local</url>
+    </repository>
+    <repository>
+      <id>Sonatype Snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
   </repositories>
+
 
   <dependencies>
     <dependency>
@@ -99,6 +161,21 @@
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>${commons.codec.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>${commons.net.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${httpcomponents.client.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cloudera.navigator</groupId>
@@ -233,4 +310,61 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- Profile for release. Includes building of source and javadoc jars. -->
+    <profile>
+      <id>release</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <version>2.2.1</version>
+              <configuration>
+                <excludeResources>true</excludeResources>
+              </configuration>
+              <executions>
+                <execution>
+                  <id>attach-sources</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>jar-no-fork</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <version>1.5</version>
+              <configuration>
+                <passphrase>${gpg.passphrase}</passphrase>
+                <useAgent>${gpg.useagent}</useAgent>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>sign</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

@@ -19,14 +19,15 @@ package co.cask.cdap.metadata.entity;
 import co.cask.cdap.proto.id.ProgramId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
+import com.cloudera.nav.sdk.model.annotations.MClass;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
 /**
  * CDAP Program {@link Entity}
  */
+@MClass(model = "cdap_program_entity")
 public class ProgramEntity extends Entity {
-
   private final ProgramId programId;
 
   public ProgramEntity(ProgramId programId) {
@@ -36,17 +37,16 @@ public class ProgramEntity extends Entity {
 
   @Override
   public SourceType getSourceType() {
-    return SourceType.YARN;
+    return SourceType.SDK;
   }
 
   @Override
   public EntityType getEntityType() {
-    return EntityType.SUB_OPERATION;
+    return EntityType.OPERATION;
   }
 
   @Override
   public String generateId() {
-    return MD5IdGenerator.generateIdentity(programId.getNamespace(), programId.getApplication(),
-                                           programId.getType().getPrettyName(), programId.getProgram());
+    return MD5IdGenerator.generateIdentity(programId.toString());
   }
 }
