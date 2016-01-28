@@ -63,4 +63,15 @@ public class MetadataKafkaConfig {
   public String getOffsetDataset() {
     return Strings.isNullOrEmpty(offsetDataset) ? DEFAULT_OFFSET_DATASET : offsetDataset;
   }
+
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("zookeeperString", getZookeeperString())
+      .add("brokerString", getBrokerString())
+      .add("numPartitions", getNumPartitions())
+      .add("topic", getTopic())
+      .add("offsetDataset", getOffsetDataset())
+      .toString();
+  }
 }

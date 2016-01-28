@@ -16,6 +16,7 @@
 
 package co.cask.cdap.metadata.config;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 /**
@@ -33,7 +34,7 @@ public class NavigatorConfig {
 
   // Optional parameters
   private final Integer navigatorPort;
-  private final boolean autocommit;
+  private final Boolean autocommit;
   private final String namespace;
   private final String applicationURL;
   private final String fileFormat;
@@ -56,7 +57,7 @@ public class NavigatorConfig {
   }
 
   public NavigatorConfig(String navigatorHostName, String username, String password) {
-    this(navigatorHostName, username, password, DEFAULT_NAVIGATOR_PORT, false, DEFAULT_NAVIGATOR_NAMESPACE,
+    this(navigatorHostName, username, password, DEFAULT_NAVIGATOR_PORT, true, DEFAULT_NAVIGATOR_NAMESPACE,
          generateApplicationURL(navigatorHostName), DEFAULT_FILE_FORMAT,
          generateNavigatorURL(navigatorHostName, DEFAULT_NAVIGATOR_PORT),
          generateMetadataParentURI(navigatorHostName, DEFAULT_NAVIGATOR_PORT));
@@ -113,6 +114,21 @@ public class NavigatorConfig {
   }
 
   public Boolean getAutocommit() {
-    return autocommit;
+    return autocommit == null ? true : autocommit;
+  }
+
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("navigatorHostName", navigatorHostName)
+      .add("username", username)
+      .add("navigatorPort", navigatorPort)
+      .add("autocommit", autocommit)
+      .add("namespace", namespace)
+      .add("applicationURL", applicationURL)
+      .add("fileFormat", fileFormat)
+      .add("navigatorURL", navigatorURL)
+      .add("metadataParentURI", metadataParentURI)
+      .toString();
   }
 }

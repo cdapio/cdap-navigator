@@ -110,7 +110,7 @@ Required Properties:
 Optional Properties:
 
 - ``navigatorPort``: Navigator Metadata Server port; default is ``7187``
-- ``autocommit``: Navigator SDK's autocommit property; default is ``false``
+- ``autocommit``: Navigator SDK's autocommit property; default is ``true``
 - ``namespace``: Navigator namespace; default is ``CDAP``
 - ``applicationURL``: Navigator Application URL; default is ``http://navigatorHostName``
 - ``fileFormat``: Navigator File Format; default is ``JSON``

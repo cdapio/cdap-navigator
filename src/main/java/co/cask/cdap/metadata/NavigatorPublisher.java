@@ -94,7 +94,9 @@ public final class NavigatorPublisher extends AbstractFlowlet {
     NavigatorAppConfig appConfig = GSON.fromJson(context.getApplicationSpecification().getConfiguration(),
                                                  NavigatorAppConfig.class);
     navigatorConfig = appConfig.getNavigatorConfig();
-    navigatorPlugin = NavigatorPlugin.fromConfigMap(NavigatorConfigConverter.convert(navigatorConfig));
+    Map<String, Object> naviConfig = NavigatorConfigConverter.convert(navigatorConfig);
+    LOG.info("Starting Navigator Plugin with configuration : {}", naviConfig);
+    navigatorPlugin = NavigatorPlugin.fromConfigMap(naviConfig);
   }
 
   @ProcessInput

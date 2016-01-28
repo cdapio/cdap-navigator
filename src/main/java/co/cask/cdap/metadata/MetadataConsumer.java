@@ -27,6 +27,8 @@ import co.cask.cdap.metadata.config.NavigatorAppConfig;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 
@@ -34,6 +36,7 @@ import java.nio.ByteBuffer;
  * Subscribes to Kafka messages published for the CDAP Platform that contains the Metadata Change records.
  */
 public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, ByteBuffer> {
+  private static final Logger LOG = LoggerFactory.getLogger(MetadataConsumer.class);
   private static final Gson GSON = new Gson();
 
   // TODO: Add a way to reset the offset
@@ -87,6 +90,7 @@ public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, B
     NavigatorAppConfig appConfig = GSON.fromJson(getContext().getApplicationSpecification().getConfiguration(),
                                                  NavigatorAppConfig.class);
     metadataKafkaConfig = appConfig.getMetadataKafkaConfig();
+    LOG.info("Configuring Metadata Kafka Consumer : {}", metadataKafkaConfig);
     offsetStore = getContext().getDataset(metadataKafkaConfig.getOffsetDataset());
     if (!Strings.isNullOrEmpty(metadataKafkaConfig.getZookeeperString())) {
       kafkaConfigurer.setZooKeeper(metadataKafkaConfig.getZookeeperString());
