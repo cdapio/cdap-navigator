@@ -36,7 +36,7 @@
     <slf4j.version>1.7.5</slf4j.version>
     <guava.version>13.0.1</guava.version>
     <junit.version>4.11</junit.version>
-    <kafka.pack.version>0.9.0-SNAPSHOT</kafka.pack.version>
+    <kafka.pack.version>0.9.0</kafka.pack.version>
   </properties>
 
   <distributionManagement>
@@ -84,23 +84,11 @@
 
   <repositories>
     <repository>
-      <id>sonatype</id>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-    </repository>
-    <repository>
       <id>cdh-dependencies.releases.repo</id>
       <url>https://repository.cloudera.com/artifactory/libs-release-local</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>
-    <repository>
-      <id>cdh.snapshots.repo</id>
-      <url>https://repository.cloudera.com/artifactory/libs-snapshot-local</url>
-    </repository>
-    <repository>
-      <id>Sonatype Snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
   </repositories>
 
