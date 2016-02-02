@@ -119,7 +119,7 @@ Optional Properties:
 
 Step 3: Create a CDAP Application by providing the configuration file::
 
-  > create app metaApp navigator 1.0.0 USER appconfig.txt
+  > create app metaApp navigator 0.2.0-SNAPSHOT USER appconfig.txt
 
 Starting the Navigator Integration App
 --------------------------------------
