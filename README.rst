@@ -11,7 +11,7 @@ application abstractions to simplify and accelerate application development.
 
 Navigator Integration App is one such application built by the team at Cask for bridging CDAP Metadata
 with Cloudera's data management tool, Navigator. The Navigator Integration App is a CDAP-native application 
-that uses a real-time Flow to fetch the CDAP Metadata and write it to Navigator.
+that uses a real-time flow to fetch the CDAP Metadata and write it to Cloudera Navigator.
 
 Resources
 ---------
@@ -29,32 +29,31 @@ Getting Started
 
 Prerequisites
 -------------
-To use Navigator Integration App, you need CDAP version 3.3.0 or higher and Navigator version of 2.4.0 or greater.
+To use the Navigator Integration App, you need CDAP version 3.3.0 (or higher) and Navigator version 2.4.0 (or higher).
 
 Metadata Publishing to Kafka
 ----------------------------
-Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP Metadata system publishes
+The Navigator Integration App contains a flow that subscribes to the Kafka topic to which the CDAP Metadata service publishes
 the metadata updates. Hence, before using this application, you should enable publishing of metadata updates to
-Kafka, as described in the CDAP documentation `Enable Metadata Update Notifications
+Kafka, as described in the CDAP document `Enable Metadata Update Notifications
 <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata-update-notifications>`__.
 
 
 Deploying the Navigator Integration App
 ---------------------------------------
-
-Step 1: Start by deploying the artifact JAR (downloading the `released JAR from Maven <http://search.maven.org/remotecontent?filepath=co/cask/cdap/metadata/navigator/0.1.0/navigator-0.1.0.jar>`__).
+**Step 1:** Start by deploying the artifact JAR (download the `released JAR from Maven 
+<http://search.maven.org/remotecontent?filepath=co/cask/cdap/metadata/navigator/0.1.0/navigator-0.1.0.jar>`__).
 Deploy the JAR using the CDAP CLI::
 
   > load artifact target/navigator-<version>-jar
 
-
-Step 2: Create an application configuration file that contains:
+**Step 2:** Create an application configuration file that contains:
 
 - Kafka Metadata Config (``metadataKafkaConfig``): Kafka Consumer Flowlet configuration information
-  (info about where we can fetch metadata updates)
+  (information about where we can fetch metadata updates)
 - Navigator Config (``navigatorConfig``): Information required by the Navigator Client to publish data to Navigator
 
-Sample Application Configuration file::
+A Sample Application Configuration file::
 
   {
     "config": {
@@ -107,20 +106,19 @@ Optional Properties:
 - ``navigatorURL``: Navigator URL; default is ``http://navigatorHostName:navigatorPort/api/v8``
 - ``metadataParentURI``: Navigator Metadata Parent URI; default is ``http://navigatorHostName:navigatorPort/api/v8/metadata/plugin``
 
-Step 3: Create a CDAP Application by providing the configuration file::
+**Step 3:** Create a CDAP Application by providing the configuration file::
 
   > create app metaApp navigator 0.1.0 USER appconfig.txt
 
 Starting the Navigator Integration App
 --------------------------------------
-
 To start the MetadataFlow::
 
   > start flow metaApp.MetadataFlow
 
-You should now be able to view CDAP Metadata in the Navigator UI. Note that all CDAP Entities use ``SDK`` as
-the SourceType and use ``CDAP`` as the namespace (this can be changed). Since Navigator SDK doesn't allow adding
-new EntityTypes, we have used this mapping:
+You should now be able to view CDAP Metadata in the Cloudera Navigator UI. Note that all CDAP Entities use ``SDK`` as
+the SourceType and use ``CDAP`` as the namespace (this can be modified). Since the Navigator SDK doesn't allow the adding
+of new EntityTypes, we have used this mapping between CDAP and Navigator EntityTypes:
 
 +-------------------+-----------------------+
 | CDAP EntityType   | Navigator EntityType  |
