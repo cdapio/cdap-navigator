@@ -9,7 +9,7 @@ The Cask™ Data Application Platform (CDAP) is an integrated, open source appli
 development platform for the Hadoop ecosystem that provides developers with data and
 application abstractions to simplify and accelerate application development.
 
-Navigator Integration App is one such application built by the team at Cask for bridging CDAP Metadata
+The Navigator Integration App is one such application built by the team at Cask for bridging CDAP Metadata
 with Cloudera's data management tool, Navigator. The Navigator Integration App is a CDAP-native application 
 that uses a real-time flow to fetch the CDAP Metadata and write it to Cloudera Navigator.
 
@@ -53,7 +53,7 @@ Deploy the JAR using the CDAP CLI::
   (information about where we can fetch metadata updates)
 - Navigator Config (``navigatorConfig``): Information required by the Navigator Client to publish data to Navigator
 
-A Sample Application Configuration file::
+A sample Application Configuration file::
 
   {
     "config": {
@@ -74,15 +74,15 @@ This key contains a property map with these properties:
 
 Required Properties:
 
-- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP metadata updates
+- ``zookeeperString``: Kafka ZooKeeper string that can be used to subscribe to the CDAP metadata updates
 - ``brokerString``: Kafka Broker string to which CDAP metadata is published
 
 *Note:* Specify either the ``zookeeperString`` or the ``brokerString``.
 
 Optional Properties:
 
-- ``topic``: Kafka Topic to which CDAP Metadata updates are published; default is ``cdap-metadata-updates`` which
-  corresponds to the default topic used in CDAP for Metadata updates
+- ``topic``: Kafka Topic to which CDAP metadata updates are published; default is ``cdap-metadata-updates`` which
+  corresponds to the default topic used in CDAP for metadata updates
 - ``numPartitions``: Number of Kafka partitions; default is set to ``10``
 - ``offsetDataset``: Name of the dataset where Kafka offsets are stored; default is ``kafkaOffset``
 
