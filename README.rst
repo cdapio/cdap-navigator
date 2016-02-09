@@ -22,7 +22,6 @@ Resources
   <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/flows-flowlets/index.html>`__
 - `Kafka Flowlet Library 
   <https://github.com/caskdata/cdap-packs/tree/develop/cdap-kafka-pack/cdap-kafka-flow>`__
-- `Navigator SDK <https://github.com/cloudera/navigator-sdk>`__
 
 
 Getting Started
@@ -39,20 +38,11 @@ the metadata updates. Hence, before using this application, you should enable pu
 Kafka, as described in the CDAP documentation `Enable Metadata Update Notifications
 <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata-update-notifications>`__.
 
-Building Plugins
-----------------
-You get started by building directly from the latest source code::
-
-  git clone https://github.com/caskdata/cdap-navigator.git
-  cd cdap-navigator
-  mvn clean package
-
-After the build completes, you will have a JAR under the ``target/`` directory.
 
 Deploying the Navigator Integration App
 ---------------------------------------
 
-Step 1: Start by deploying the artifact JAR (either built from source or by downloading the released JAR from Maven).
+Step 1: Start by deploying the artifact JAR (downloading the `released JAR from Maven <http://search.maven.org/remotecontent?filepath=co/cask/cdap/metadata/navigator/0.1.0/navigator-0.1.0.jar>`__).
 Deploy the JAR using the CDAP CLI::
 
   > load artifact target/navigator-<version>-jar
