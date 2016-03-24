@@ -30,6 +30,9 @@ import co.cask.cdap.metadata.entity.StreamEntity;
 import co.cask.cdap.metadata.entity.StreamViewEntity;
 import co.cask.cdap.metadata.entity.UnsupportedEntityException;
 import co.cask.cdap.proto.Id;
+import co.cask.cdap.proto.audit.AuditMessage;
+import co.cask.cdap.proto.audit.AuditType;
+import co.cask.cdap.proto.audit.payload.metadata.MetadataPayload;
 import co.cask.cdap.proto.codec.NamespacedIdCodec;
 import co.cask.cdap.proto.element.EntityType;
 import co.cask.cdap.proto.id.ApplicationId;
@@ -39,8 +42,9 @@ import co.cask.cdap.proto.id.EntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
+import co.cask.cdap.proto.metadata.Metadata;
 import co.cask.cdap.proto.metadata.MetadataChangeRecord;
-import co.cask.cdap.proto.metadata.MetadataRecord;
+import co.cask.cdap.proto.metadata.MetadataScope;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
 import com.cloudera.nav.sdk.client.writer.ResultSet;
 import com.cloudera.nav.sdk.model.entities.Entity;
@@ -102,31 +106,40 @@ public final class NavigatorPublisher extends AbstractFlowlet {
 
   @ProcessInput
   public void process(String serializedMetaData) throws NavigatorClientWriteException {
-    MetadataChangeRecord record = GSON.fromJson(serializedMetaData, MetadataChangeRecord.class);
-    MetadataChangeRecord.MetadataDiffRecord metadataDiffRecord = record.getChanges();
-    MetadataRecord addition = metadataDiffRecord.getAdditions();
-    MetadataRecord deletion = metadataDiffRecord.getDeletions();
-    Id.NamespacedId entityId = addition.getEntityId();
-    Entity entity;
-    try {
-      entity = convertToEntity(entityId, addition.getTags(), addition.getProperties(), deletion.getTags(),
-                               deletion.getProperties());
-    } catch (UnsupportedEntityException ex) {
-      LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getIdType(), entityId);
+    AuditMessage record = GSON.fromJson(serializedMetaData, AuditMessage.class);
+    if (record.getType() != AuditType.METADATA_CHANGE) {
+      // TODO: CDAP-5394 utilize DELETE messages to remove entities from Navigator
       return;
     }
 
-    ResultSet resultSet = navigatorPlugin.write(entity);
-    if (resultSet.hasErrors()) {
-      throw new NavigatorClientWriteException(entity, resultSet);
+    EntityId entityId = record.getEntityId();
+
+    // All the AuditPayloads will be of MetadataPayload since we skip other types of Audit messages
+    MetadataPayload payload = (MetadataPayload) record.getPayload();
+
+    Map<MetadataScope, Metadata> additions = payload.getAdditions();
+    Map<MetadataScope, Metadata> deletions = payload.getDeletions();
+
+    // Navigator client does not differentiate between user and system tags/properties. Hence add/delete them without
+    // any classification, one after the other.
+    for (MetadataScope scope : additions.keySet()) {
+      try {
+        Entity entity = convertToEntity(entityId, additions.get(scope).getTags(), additions.get(scope).getProperties(),
+                                        deletions.get(scope).getTags(), deletions.get(scope).getProperties());
+        ResultSet resultSet = navigatorPlugin.write(entity);
+        if (resultSet.hasErrors()) {
+          throw new NavigatorClientWriteException(entity, resultSet);
+        }
+      } catch (UnsupportedEntityException ex) {
+        LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getEntity(), entityId);
+      }
     }
   }
 
-  private Entity convertToEntity(Id.NamespacedId namespacedId, Set<String> addTags, Map<String, String> addProperties,
+  private Entity convertToEntity(EntityId entityId, Set<String> addTags, Map<String, String> addProperties,
                                  Set<String> deleteTags, Map<String, String> deleteProperties)
     throws UnsupportedEntityException {
     Entity entity;
-    EntityId entityId = namespacedId.toEntityId();
     EntityType entityType = entityId.getEntity();
     switch (entityType) {
       case APPLICATION:

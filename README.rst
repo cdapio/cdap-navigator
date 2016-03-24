@@ -34,8 +34,8 @@ To use Navigator Integration App, you need CDAP version 3.3.0 or higher and Navi
 
 Metadata Publishing to Kafka
 ----------------------------
-Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP Metadata system publishes
-the metadata updates. Hence, before using this application, you should enable publishing of metadata updates to
+Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP publishes
+the audit messages. Hence, before using this application, you should enable publishing of audit messages to
 Kafka, as described in the CDAP documentation `Enable Metadata Update Notifications
 <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata-update-notifications>`__.
 
@@ -60,15 +60,15 @@ Deploy the JAR using the CDAP CLI::
 
 Step 2: Create an application configuration file that contains:
 
-- Kafka Metadata Config (``metadataKafkaConfig``): Kafka Consumer Flowlet configuration information
-  (info about where we can fetch metadata updates)
+- Kafka Audit Config (``auditKafkaConfig``): Kafka Consumer Flowlet configuration information
+  (info about where we can fetch audit messages)
 - Navigator Config (``navigatorConfig``): Information required by the Navigator Client to publish data to Navigator
 
 Sample Application Configuration file::
 
   {
     "config": {
-      "metadataKafkaConfig": {
+      "auditKafkaConfig": {
         "zookeeperString": "hostname:2181/cdap/kafka"
       },
       "navigatorConfig": {
@@ -79,21 +79,21 @@ Sample Application Configuration file::
     }
   }
 
-**Metadata Kafka Config:**
+**Audit Kafka Config:**
 
 This key contains a property map with these properties:
 
 Required Properties:
 
-- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP metadata updates
-- ``brokerString``: Kafka Broker string to which CDAP metadata is published
+- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP Audit messages
+- ``brokerString``: Kafka Broker string to which CDAP Audit messages are published
 
 *Note:* Specify either the ``zookeeperString`` or the ``brokerString``.
 
 Optional Properties:
 
-- ``topic``: Kafka Topic to which CDAP Metadata updates are published; default is ``cdap-metadata-updates`` which
-  corresponds to the default topic used in CDAP for Metadata updates
+- ``topic``: Kafka Topic to which CDAP Audit messages are published; default is ``audit`` which
+  corresponds to the default topic used in CDAP for Audit messages
 - ``numPartitions``: Number of Kafka partitions; default is set to ``10``
 - ``offsetDataset``: Name of the dataset where Kafka offsets are stored; default is ``kafkaOffset``
 
