@@ -22,7 +22,7 @@ import co.cask.cdap.api.flow.flowlet.OutputEmitter;
 import co.cask.cdap.kafka.flow.Kafka08ConsumerFlowlet;
 import co.cask.cdap.kafka.flow.KafkaConfigurer;
 import co.cask.cdap.kafka.flow.KafkaConsumerConfigurer;
-import co.cask.cdap.metadata.config.MetadataKafkaConfig;
+import co.cask.cdap.metadata.config.AuditKafkaConfig;
 import co.cask.cdap.metadata.config.NavigatorAppConfig;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -33,43 +33,43 @@ import org.slf4j.LoggerFactory;
 import java.nio.ByteBuffer;
 
 /**
- * Subscribes to Kafka messages published for the CDAP Platform that contains the Metadata Change records.
+ * Subscribes to Kafka messages published for the CDAP Platform that contains the Audit messages.
  */
-public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, ByteBuffer> {
-  private static final Logger LOG = LoggerFactory.getLogger(MetadataConsumer.class);
+public final class AuditDataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, ByteBuffer> {
+  private static final Logger LOG = LoggerFactory.getLogger(AuditDataConsumer.class);
   private static final Gson GSON = new Gson();
 
   // TODO: Add a way to reset the offset
   private KeyValueTable offsetStore;
 
   private OutputEmitter<String> emitter;
-  private MetadataKafkaConfig metadataKafkaConfig;
+  private AuditKafkaConfig auditKafkaConfig;
 
   private String offsetDatasetName;
 
-  public MetadataConsumer(MetadataKafkaConfig metadataKafkaConfig) {
-    this.offsetDatasetName = metadataKafkaConfig.getOffsetDataset();
-    verifyConfig(metadataKafkaConfig);
+  public AuditDataConsumer(AuditKafkaConfig auditKafkaConfig) {
+    this.offsetDatasetName = auditKafkaConfig.getOffsetDataset();
+    verifyConfig(auditKafkaConfig);
   }
 
-  public MetadataConsumer() {
+  public AuditDataConsumer() {
     // no-op
   }
 
   @VisibleForTesting
-  static void verifyConfig(MetadataKafkaConfig metadataKafkaConfig) {
+  static void verifyConfig(AuditKafkaConfig auditKafkaConfig) {
     // Verify if the configuration is right
-    if (Strings.isNullOrEmpty(metadataKafkaConfig.getBrokerString()) &&
-      Strings.isNullOrEmpty(metadataKafkaConfig.getZookeeperString())) {
+    if (Strings.isNullOrEmpty(auditKafkaConfig.getBrokerString()) &&
+      Strings.isNullOrEmpty(auditKafkaConfig.getZookeeperString())) {
       throw new IllegalArgumentException("Should provide either a broker string or a zookeeper string for " +
-                                           "Kafka Metadata subscription!");
+                                           "Kafka Audit Messages subscription!");
     }
 
-    if (Strings.isNullOrEmpty(metadataKafkaConfig.getTopic())) {
-      throw new IllegalArgumentException("Should provide a Kafka Topic for Kafka Metadata subscription!");
+    if (Strings.isNullOrEmpty(auditKafkaConfig.getTopic())) {
+      throw new IllegalArgumentException("Should provide a Kafka Topic for Kafka Audit Message subscription!");
     }
 
-    if (metadataKafkaConfig.getNumPartitions() <= 0) {
+    if (auditKafkaConfig.getNumPartitions() <= 0) {
       throw new IllegalArgumentException("Kafka Partitions should be > 0.");
     }
   }
@@ -89,13 +89,13 @@ public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, B
   protected void configureKafka(KafkaConfigurer kafkaConfigurer) {
     NavigatorAppConfig appConfig = GSON.fromJson(getContext().getApplicationSpecification().getConfiguration(),
                                                  NavigatorAppConfig.class);
-    metadataKafkaConfig = appConfig.getMetadataKafkaConfig();
-    LOG.info("Configuring Metadata Kafka Consumer : {}", metadataKafkaConfig);
-    offsetStore = getContext().getDataset(metadataKafkaConfig.getOffsetDataset());
-    if (!Strings.isNullOrEmpty(metadataKafkaConfig.getZookeeperString())) {
-      kafkaConfigurer.setZooKeeper(metadataKafkaConfig.getZookeeperString());
-    } else if (!Strings.isNullOrEmpty(metadataKafkaConfig.getBrokerString())) {
-      kafkaConfigurer.setBrokers(metadataKafkaConfig.getBrokerString());
+    auditKafkaConfig = appConfig.getAuditKafkaConfig();
+    LOG.info("Configuring Audit Kafka Consumer : {}", auditKafkaConfig);
+    offsetStore = getContext().getDataset(auditKafkaConfig.getOffsetDataset());
+    if (!Strings.isNullOrEmpty(auditKafkaConfig.getZookeeperString())) {
+      kafkaConfigurer.setZooKeeper(auditKafkaConfig.getZookeeperString());
+    } else if (!Strings.isNullOrEmpty(auditKafkaConfig.getBrokerString())) {
+      kafkaConfigurer.setBrokers(auditKafkaConfig.getBrokerString());
     }
     setupTopicPartitions(kafkaConfigurer);
   }
@@ -106,19 +106,19 @@ public final class MetadataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, B
   }
 
   private void setupTopicPartitions(KafkaConsumerConfigurer configurer) {
-    int partitions = metadataKafkaConfig.getNumPartitions();
+    int partitions = auditKafkaConfig.getNumPartitions();
     int instanceId = getContext().getInstanceId();
     int instances = getContext().getInstanceCount();
     for (int i = 0; i < partitions; i++) {
       if ((i % instances) == instanceId) {
-        configurer.addTopicPartition(metadataKafkaConfig.getTopic(), i);
+        configurer.addTopicPartition(auditKafkaConfig.getTopic(), i);
       }
     }
   }
 
   @Override
-  protected void processMessage(ByteBuffer metadataKafkaMessage) throws Exception {
-    String data = Bytes.toString(metadataKafkaMessage);
+  protected void processMessage(ByteBuffer auditMessage) throws Exception {
+    String data = Bytes.toString(auditMessage);
     emitter.emit(data);
   }
 }
