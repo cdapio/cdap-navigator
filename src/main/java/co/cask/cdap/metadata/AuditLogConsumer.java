@@ -35,8 +35,8 @@ import java.nio.ByteBuffer;
 /**
  * Subscribes to Kafka messages published for the CDAP Platform that contains the Audit messages.
  */
-public final class AuditDataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, ByteBuffer> {
-  private static final Logger LOG = LoggerFactory.getLogger(AuditDataConsumer.class);
+public final class AuditLogConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, ByteBuffer> {
+  private static final Logger LOG = LoggerFactory.getLogger(AuditLogConsumer.class);
   private static final Gson GSON = new Gson();
 
   // TODO: Add a way to reset the offset
@@ -47,12 +47,12 @@ public final class AuditDataConsumer extends Kafka08ConsumerFlowlet<ByteBuffer, 
 
   private String offsetDatasetName;
 
-  public AuditDataConsumer(AuditKafkaConfig auditKafkaConfig) {
+  public AuditLogConsumer(AuditKafkaConfig auditKafkaConfig) {
     this.offsetDatasetName = auditKafkaConfig.getOffsetDataset();
     verifyConfig(auditKafkaConfig);
   }
 
-  public AuditDataConsumer() {
+  public AuditLogConsumer() {
     // no-op
   }
 

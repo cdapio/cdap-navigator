@@ -29,11 +29,11 @@ import co.cask.cdap.metadata.entity.ProgramEntity;
 import co.cask.cdap.metadata.entity.StreamEntity;
 import co.cask.cdap.metadata.entity.StreamViewEntity;
 import co.cask.cdap.metadata.entity.UnsupportedEntityException;
-import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.audit.AuditMessage;
 import co.cask.cdap.proto.audit.AuditType;
 import co.cask.cdap.proto.audit.payload.metadata.MetadataPayload;
-import co.cask.cdap.proto.codec.NamespacedIdCodec;
+import co.cask.cdap.proto.codec.AuditMessageTypeAdapter;
+import co.cask.cdap.proto.codec.EntityIdTypeAdapter;
 import co.cask.cdap.proto.element.EntityType;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.DatasetId;
@@ -64,7 +64,8 @@ import java.util.Set;
 public final class NavigatorPublisher extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(NavigatorPublisher.class);
   private static final Gson GSON = new GsonBuilder()
-    .registerTypeAdapter(Id.NamespacedId.class, new NamespacedIdCodec())
+    .registerTypeAdapter(AuditMessage.class, new AuditMessageTypeAdapter())
+    .registerTypeAdapter(EntityId.class, new EntityIdTypeAdapter())
     .create();
 
   private NavigatorConfig navigatorConfig;
