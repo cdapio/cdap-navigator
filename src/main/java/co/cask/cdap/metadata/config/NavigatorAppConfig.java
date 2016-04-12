@@ -25,18 +25,18 @@ import co.cask.cdap.metadata.NavigatorApp;
 public class NavigatorAppConfig extends Config {
 
   private final NavigatorConfig navigatorConfig;
-  private final MetadataKafkaConfig metadataKafkaConfig;
+  private final AuditKafkaConfig auditKafkaConfig;
 
-  public NavigatorAppConfig(NavigatorConfig navigatorConfig, MetadataKafkaConfig metadataKafkaConfig) {
+  public NavigatorAppConfig(NavigatorConfig navigatorConfig, AuditKafkaConfig auditKafkaConfig) {
     this.navigatorConfig = navigatorConfig;
-    this.metadataKafkaConfig = metadataKafkaConfig;
+    this.auditKafkaConfig = auditKafkaConfig;
   }
 
   public NavigatorConfig getNavigatorConfig() {
     return navigatorConfig;
   }
 
-  public MetadataKafkaConfig getMetadataKafkaConfig() {
-    return metadataKafkaConfig;
+  public AuditKafkaConfig getAuditKafkaConfig() {
+    return auditKafkaConfig;
   }
 }
