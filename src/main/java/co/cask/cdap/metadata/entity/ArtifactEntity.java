@@ -16,7 +16,7 @@
 
 package co.cask.cdap.metadata.entity;
 
-import co.cask.cdap.proto.id.NamespacedArtifactId;
+import co.cask.cdap.proto.id.ArtifactId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
 import com.cloudera.nav.sdk.model.entities.Entity;
@@ -26,9 +26,9 @@ import com.cloudera.nav.sdk.model.entities.EntityType;
  * CDAP Artifact {@link Entity}
  */
 public class ArtifactEntity extends Entity {
-  private final NamespacedArtifactId artifactId;
+  private final ArtifactId artifactId;
 
-  public ArtifactEntity(NamespacedArtifactId artifactId) {
+  public ArtifactEntity(ArtifactId artifactId) {
     this.artifactId = artifactId;
     setName(artifactId.toString());
   }
