@@ -35,6 +35,7 @@ import co.cask.cdap.proto.element.EntityType;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.ArtifactId;
 import co.cask.cdap.proto.id.DatasetId;
+import co.cask.cdap.proto.id.EntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
@@ -106,12 +107,13 @@ public final class NavigatorPublisher extends AbstractFlowlet {
     MetadataRecord addition = metadataDiffRecord.getAdditions();
     MetadataRecord deletion = metadataDiffRecord.getDeletions();
     Id.NamespacedId entityId = addition.getEntityId();
-    Entity entity = null;
+    Entity entity;
     try {
       entity = convertToEntity(entityId, addition.getTags(), addition.getProperties(), deletion.getTags(),
                                deletion.getProperties());
     } catch (UnsupportedEntityException ex) {
       LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getIdType(), entityId);
+      return;
     }
 
     ResultSet resultSet = navigatorPlugin.write(entity);
@@ -120,37 +122,30 @@ public final class NavigatorPublisher extends AbstractFlowlet {
     }
   }
 
-  private Entity convertToEntity(Id.NamespacedId entityId, Set<String> addTags, Map<String, String> addProperties,
+  private Entity convertToEntity(Id.NamespacedId namespacedId, Set<String> addTags, Map<String, String> addProperties,
                                  Set<String> deleteTags, Map<String, String> deleteProperties)
     throws UnsupportedEntityException {
     Entity entity;
-    EntityType entityType = entityId.toEntityId().getEntity();
+    EntityId entityId = namespacedId.toEntityId();
+    EntityType entityType = entityId.getEntity();
     switch (entityType) {
       case APPLICATION:
-        Id.Application appId = (Id.Application) entityId;
-        entity = new ApplicationEntity(new ApplicationId(appId.getNamespaceId(), appId.getId()));
+        entity = new ApplicationEntity((ApplicationId) entityId);
         break;
       case PROGRAM:
-        Id.Program programId = (Id.Program) entityId;
-        entity = new ProgramEntity(new ProgramId(programId.getNamespaceId(), programId.getApplicationId(),
-                                                 programId.getType(), programId.getId()));
+        entity = new ProgramEntity((ProgramId) entityId);
         break;
       case DATASET:
-        Id.DatasetInstance datasetId = (Id.DatasetInstance) entityId;
-        entity = new DatasetEntity(new DatasetId(datasetId.getNamespaceId(), datasetId.getId()));
+        entity = new DatasetEntity((DatasetId) entityId);
         break;
       case STREAM:
-        Id.Stream streamId = (Id.Stream) entityId;
-        entity = new StreamEntity(new StreamId(streamId.getNamespaceId(), streamId.getId()));
+        entity = new StreamEntity((StreamId) entityId);
         break;
       case ARTIFACT:
-        Id.Artifact artifactId = (Id.Artifact) entityId;
-        entity = new ArtifactEntity(new ArtifactId(artifactId.getNamespace().getId(), artifactId.getId(),
-                                                   artifactId.getVersion().getVersion()));
+        entity = new ArtifactEntity((ArtifactId) entityId);
         break;
       case STREAM_VIEW:
-        Id.Stream.View viewId = (Id.Stream.View) entityId;
-        entity = new StreamViewEntity(new StreamViewId(viewId.getNamespaceId(), viewId.getStreamId(), viewId.getId()));
+        entity = new StreamViewEntity((StreamViewId) entityId);
         break;
       default:
         throw new UnsupportedEntityException(entityType);
