@@ -36,9 +36,9 @@ import co.cask.cdap.proto.codec.AuditMessageTypeAdapter;
 import co.cask.cdap.proto.codec.EntityIdTypeAdapter;
 import co.cask.cdap.proto.element.EntityType;
 import co.cask.cdap.proto.id.ApplicationId;
+import co.cask.cdap.proto.id.ArtifactId;
 import co.cask.cdap.proto.id.DatasetId;
 import co.cask.cdap.proto.id.EntityId;
-import co.cask.cdap.proto.id.NamespacedArtifactId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
@@ -156,7 +156,7 @@ public final class NavigatorPublisher extends AbstractFlowlet {
         entity = new StreamEntity((StreamId) entityId);
         break;
       case ARTIFACT:
-        entity = new ArtifactEntity((NamespacedArtifactId) entityId);
+        entity = new ArtifactEntity((ArtifactId) entityId);
         break;
       case STREAM_VIEW:
         entity = new StreamViewEntity((StreamViewId) entityId);
