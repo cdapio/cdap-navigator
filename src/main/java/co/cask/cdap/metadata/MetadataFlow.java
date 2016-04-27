@@ -35,8 +35,8 @@ public final class MetadataFlow extends AbstractFlow {
   public void configure() {
     setName(FLOW_NAME);
     setDescription("Flow that subscribes to Metadata changes and propagates the same to Navigator");
-    addFlowlet("metadataConsumer", new MetadataConsumer(navigatorAppConfig.getMetadataKafkaConfig()));
+    addFlowlet("auditLogConsumer", new AuditLogConsumer(navigatorAppConfig.getAuditKafkaConfig()));
     addFlowlet("navigatorPublisher", new NavigatorPublisher(navigatorAppConfig.getNavigatorConfig()));
-    connect("metadataConsumer", "navigatorPublisher");
+    connect("auditLogConsumer", "navigatorPublisher");
   }
 }
