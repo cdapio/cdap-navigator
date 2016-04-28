@@ -22,10 +22,10 @@ import com.google.common.base.Strings;
 /**
  * Configuration for Metadata Kafka subscription.
  */
-public class MetadataKafkaConfig {
+public class AuditKafkaConfig {
 
   private static final String DEFAULT_OFFSET_DATASET = "kafkaOffset";
-  private static final String DEFAULT_TOPIC = "cdap-metadata-updates";
+  private static final String DEFAULT_TOPIC = "audit";
   private static final Integer DEFAULT_PARTITIONS = 10;
 
   private final String zookeeperString;
@@ -35,8 +35,8 @@ public class MetadataKafkaConfig {
 
   private final String offsetDataset;
 
-  public MetadataKafkaConfig(String zookeeperString, String brokerString,
-                             String topic, int numPartitions, String offsetDataset) {
+  public AuditKafkaConfig(String zookeeperString, String brokerString,
+                          String topic, int numPartitions, String offsetDataset) {
     this.zookeeperString = zookeeperString;
     this.brokerString = brokerString;
     this.topic = topic;

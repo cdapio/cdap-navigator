@@ -10,13 +10,15 @@ development platform for the Hadoop ecosystem that provides developers with data
 application abstractions to simplify and accelerate application development.
 
 Navigator Integration App is one such application built by the team at Cask for bridging CDAP Metadata
-with Cloudera's data management tool, Navigator. The Navigator Integration App is a CDAP-native application 
+with Cloudera's data governance tool, Navigator. The Navigator Integration App is a CDAP-native application
 that uses a real-time Flow to fetch the CDAP Metadata and write it to Navigator.
 
 Resources
 ---------
 - `Overview of CDAP Metadata
   <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata>`__
+- `Overview of CDAP Audit Logging
+  <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/audit-logging.html#audit-logging>`__
 - `Cloudera Navigator <http://www.cloudera.com/products/cloudera-navigator.html>`__
 - `Real-time processing using Flows
   <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/flows-flowlets/index.html>`__
@@ -34,10 +36,9 @@ To use Navigator Integration App, you need CDAP version 3.3.0 or higher and Navi
 
 Metadata Publishing to Kafka
 ----------------------------
-Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP Metadata system publishes
-the metadata updates. Hence, before using this application, you should enable publishing of metadata updates to
-Kafka, as described in the CDAP documentation `Enable Metadata Update Notifications
-<http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/metadata-lineage.html#metadata-update-notifications>`__.
+Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP Audit Logging system publishes
+the metadata changes. Hence, before using this application, you should `enable audit publishing in CDAP
+<http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/audit-logging.html#audit-logging-configuring-audit-publishing>`__.
 
 Building Plugins
 ----------------
@@ -60,15 +61,15 @@ Deploy the JAR using the CDAP CLI::
 
 Step 2: Create an application configuration file that contains:
 
-- Kafka Metadata Config (``metadataKafkaConfig``): Kafka Consumer Flowlet configuration information
-  (info about where we can fetch metadata updates)
+- Kafka Audit Config (``auditKafkaConfig``): Kafka Consumer Flowlet configuration information
+  (info about where we can fetch audit messages)
 - Navigator Config (``navigatorConfig``): Information required by the Navigator Client to publish data to Navigator
 
 Sample Application Configuration file::
 
   {
     "config": {
-      "metadataKafkaConfig": {
+      "auditKafkaConfig": {
         "zookeeperString": "hostname:2181/cdap/kafka"
       },
       "navigatorConfig": {
@@ -79,21 +80,21 @@ Sample Application Configuration file::
     }
   }
 
-**Metadata Kafka Config:**
+**Audit Kafka Config:**
 
 This key contains a property map with these properties:
 
 Required Properties:
 
-- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP metadata updates
-- ``brokerString``: Kafka Broker string to which CDAP metadata is published
+- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP Audit messages
+- ``brokerString``: Kafka Broker string to which CDAP Audit messages are published
 
 *Note:* Specify either the ``zookeeperString`` or the ``brokerString``.
 
 Optional Properties:
 
-- ``topic``: Kafka Topic to which CDAP Metadata updates are published; default is ``cdap-metadata-updates`` which
-  corresponds to the default topic used in CDAP for Metadata updates
+- ``topic``: Kafka Topic to which CDAP Audit messages are published; default is ``audit`` which
+  corresponds to the default topic used in CDAP for Audit messages
 - ``numPartitions``: Number of Kafka partitions; default is set to ``10``
 - ``offsetDataset``: Name of the dataset where Kafka offsets are stored; default is ``kafkaOffset``
 
