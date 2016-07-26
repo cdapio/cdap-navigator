@@ -30,7 +30,7 @@
     <jee.version>7</jee.version>
     <app.main.class>co.cask.cdap.metadata.NavigatorApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>3.6.0-SNAPSHOT</cdap.version>
+    <cdap.version>3.5.0-SNAPSHOT</cdap.version>
     <navigator.client.version>1.0</navigator.client.version>
     <commons.codec.version>1.4</commons.codec.version>
     <commons.net.version>3.1</commons.net.version>
