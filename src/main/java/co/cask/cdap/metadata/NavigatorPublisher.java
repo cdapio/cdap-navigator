@@ -43,7 +43,6 @@ import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
 import co.cask.cdap.proto.metadata.Metadata;
-import co.cask.cdap.proto.metadata.MetadataChangeRecord;
 import co.cask.cdap.proto.metadata.MetadataScope;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
 import com.cloudera.nav.sdk.client.writer.ResultSet;
@@ -59,7 +58,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Deserializes {@link MetadataChangeRecord} and creates Navigator {@link Entity}s and writes them to Navigator.
+ * Deserializes {@link AuditMessage} and creates Navigator {@link Entity}s and writes them to Navigator.
  */
 public final class NavigatorPublisher extends AbstractFlowlet {
   private static final Logger LOG = LoggerFactory.getLogger(NavigatorPublisher.class);
@@ -106,6 +105,7 @@ public final class NavigatorPublisher extends AbstractFlowlet {
   }
 
   @ProcessInput
+  @SuppressWarnings("unused")
   public void process(String serializedMetaData) throws NavigatorClientWriteException {
     AuditMessage record = GSON.fromJson(serializedMetaData, AuditMessage.class);
     if (record.getType() != AuditType.METADATA_CHANGE) {
@@ -132,7 +132,7 @@ public final class NavigatorPublisher extends AbstractFlowlet {
           throw new NavigatorClientWriteException(entity, resultSet);
         }
       } catch (UnsupportedEntityException ex) {
-        LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getEntity(), entityId);
+        LOG.warn("EntityType {} of Entity {} not supported. Ignoring this record.", entityId.getEntityType(), entityId);
       }
     }
   }
@@ -141,7 +141,7 @@ public final class NavigatorPublisher extends AbstractFlowlet {
                                  Set<String> deleteTags, Map<String, String> deleteProperties)
     throws UnsupportedEntityException {
     Entity entity;
-    EntityType entityType = entityId.getEntity();
+    EntityType entityType = entityId.getEntityType();
     switch (entityType) {
       case APPLICATION:
         entity = new ApplicationEntity((ApplicationId) entityId);
