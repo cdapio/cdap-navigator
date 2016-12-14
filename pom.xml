@@ -186,6 +186,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!---TO DO: Remove after this JIRA is fixed: https://issues.cask.co/browse/CDAP-7826 -->
+    <dependency>
+        <groupId>org.apache.twill</groupId>
+        <artifactId>twill-core</artifactId>
+        <version>0.9.0-SNAPSHOT</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+          </exclusion>
+        </exclusions>
+    </dependency>
+    <!-- END TO DO -->
   </dependencies>
 
   <build>
