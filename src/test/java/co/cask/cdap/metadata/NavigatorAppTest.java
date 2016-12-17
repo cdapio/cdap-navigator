@@ -16,7 +16,7 @@
 
 package co.cask.cdap.metadata;
 
-import co.cask.cdap.metadata.config.AuditKafkaConfig;
+import co.cask.cdap.metadata.config.AuditLogConfig;
 import co.cask.cdap.metadata.config.NavigatorAppConfig;
 import co.cask.cdap.metadata.config.NavigatorConfig;
 import co.cask.cdap.test.ApplicationManager;
@@ -37,9 +37,8 @@ public class NavigatorAppTest extends TestBase {
   public void test() throws Exception {
     // Deploy the Navigator Application
     NavigatorConfig navigatorConfig = new NavigatorConfig("naviclus.dev.continuuity.net", "user", "pass");
-    AuditKafkaConfig auditKafkaConfig = new AuditKafkaConfig(null, "source.dev.continuuity.net:9092",
-                                                                      "cdap-metadata-updates", 10, null);
-    NavigatorAppConfig appConfig = new NavigatorAppConfig(navigatorConfig, auditKafkaConfig);
+    AuditLogConfig auditLogConfig = new AuditLogConfig();
+    NavigatorAppConfig appConfig = new NavigatorAppConfig(navigatorConfig, auditLogConfig);
     ApplicationManager appManager = deployApplication(NavigatorApp.class, appConfig);
     appManager.stopAll();
   }

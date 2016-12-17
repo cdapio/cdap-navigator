@@ -19,23 +19,20 @@ package co.cask.cdap.metadata.entity;
 import co.cask.cdap.proto.id.ArtifactId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
+import com.cloudera.nav.sdk.model.annotations.MClass;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
 /**
  * CDAP Artifact {@link Entity}
  */
+@MClass(model = "cdap_artifact_entity")
 public class ArtifactEntity extends Entity {
   private final ArtifactId artifactId;
 
   public ArtifactEntity(ArtifactId artifactId) {
     this.artifactId = artifactId;
     setName(artifactId.toString());
-  }
-
-  @Override
-  public String generateId() {
-    return MD5IdGenerator.generateIdentity(artifactId.toString());
   }
 
   @Override
@@ -46,5 +43,10 @@ public class ArtifactEntity extends Entity {
   @Override
   public EntityType getEntityType() {
     return EntityType.FILE;
+  }
+
+  @Override
+  public String generateId() {
+    return MD5IdGenerator.generateIdentity(artifactId.toString());
   }
 }
