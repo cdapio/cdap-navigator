@@ -22,8 +22,6 @@ Resources
 - `Cloudera Navigator <http://www.cloudera.com/products/cloudera-navigator.html>`__
 - `Real-time processing using Flows
   <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/flows-flowlets/index.html>`__
-- `Kafka Flowlet Library 
-  <https://github.com/caskdata/cdap-packs/tree/develop/cdap-kafka-pack/cdap-kafka-flow>`__
 - `Navigator SDK <https://github.com/cloudera/navigator-sdk>`__
 
 
@@ -32,17 +30,18 @@ Getting Started
 
 Prerequisites
 -------------
-To use Navigator Integration App, you need CDAP version 3.3.0 or higher and Navigator version of 2.4.0 or greater.
+To use Navigator Integration App, you need CDAP version 4.0.x or higher and Navigator version of 2.4.0 or greater.
 
 Metadata Publishing to Kafka
 ----------------------------
-Navigator Integration App contains a Flow that subscribes to the Kafka topic to which CDAP Audit Logging system publishes
-the metadata changes. Hence, before using this application, you should `enable audit publishing in CDAP
+Navigator Integration App contains a flow that subscribes to the TMS (Transactional Messaging System, a CDAP component)
+topic to which the CDAP Audit Logging system publishes metadata changes. Before using this application, you should 
+`enable audit publishing in CDAP
 <http://docs.cask.co/cdap/current/en/developers-manual/building-blocks/audit-logging.html#audit-logging-configuring-audit-publishing>`__.
 
 Building Plugins
 ----------------
-You get started by building directly from the latest source code::
+You begin by building directly from the latest source code::
 
   git clone https://github.com/caskdata/cdap-navigator.git
   cd cdap-navigator
@@ -61,16 +60,17 @@ Deploy the JAR using the CDAP CLI::
 
 Step 2: Create an application configuration file that contains:
 
-- Kafka Audit Config (``auditKafkaConfig``): Kafka Consumer Flowlet configuration information
-  (info about where we can fetch audit messages)
+- Audit Log Config (``auditLogConfig``): TMS consumer flowlet configuration information
+  (information about where we can fetch audit messages)
 - Navigator Config (``navigatorConfig``): Information required by the Navigator Client to publish data to Navigator
 
-Sample Application Configuration file::
+Example application configuration file::
 
   {
     "config": {
-      "auditKafkaConfig": {
-        "zookeeperString": "hostname:2181/cdap/kafka"
+      "auditLogConfig": {
+        "offsetDataset" :  "_auditOffset",
+        "limit" : 200
       },
       "navigatorConfig": {
         "navigatorHostName": "navigatormetadataserver",
@@ -80,23 +80,17 @@ Sample Application Configuration file::
     }
   }
 
-**Audit Kafka Config:**
+**Audit Log Config:**
 
-This key contains a property map with these properties:
+This key contains a property map with these (optional) properties:
 
-Required Properties:
-
-- ``zookeeperString``: Kafka Zookeeper string that can be used to subscribe to the CDAP Audit messages
-- ``brokerString``: Kafka Broker string to which CDAP Audit messages are published
-
-*Note:* Specify either the ``zookeeperString`` or the ``brokerString``.
-
-Optional Properties:
-
-- ``topic``: Kafka Topic to which CDAP Audit messages are published; default is ``audit`` which
-  corresponds to the default topic used in CDAP for Audit messages
-- ``numPartitions``: Number of Kafka partitions; default is set to ``10``
-- ``offsetDataset``: Name of the dataset where Kafka offsets are stored; default is ``kafkaOffset``
+- ``namespace``: TMS topic namespace to which audit messages are published; default is ``system`` which corresponds
+  to the namespace topic used in CDAP for audit messages
+- ``topic``: TMS Topic to which CDAP audit messages are published; default is ``audit`` which
+  corresponds to the default topic used in CDAP for audit messages
+- ``offsetDataset``: Name of the dataset where TMS offsets are stored; default is ``auditOffset``
+- ``limit``: Maximum number of audit messages to read in a single read in the consumer flowlet. By default it is set
+  to 100.
 
 **Navigator Config:**
 
@@ -118,7 +112,7 @@ Optional Properties:
 - ``navigatorURL``: Navigator URL; default is ``http://navigatorHostName:navigatorPort/api/v8``
 - ``metadataParentURI``: Navigator Metadata Parent URI; default is ``http://navigatorHostName:navigatorPort/api/v8/metadata/plugin``
 
-Step 3: Create a CDAP Application by providing the configuration file::
+Step 3: Create a CDAP application by providing the configuration file::
 
   > create app metaApp navigator 0.2.0-SNAPSHOT USER appconfig.txt
 
