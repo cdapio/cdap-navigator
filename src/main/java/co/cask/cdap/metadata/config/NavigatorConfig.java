@@ -24,6 +24,7 @@ import com.google.common.base.Strings;
  */
 public class NavigatorConfig {
 
+  private static final int API_VERSION = 9;
   private static final int DEFAULT_NAVIGATOR_PORT = 7187;
   private static final String DEFAULT_NAVIGATOR_NAMESPACE = "CDAP";
   private static final String DEFAULT_FILE_FORMAT = "JSON";
@@ -68,11 +69,11 @@ public class NavigatorConfig {
   }
 
   private static String generateNavigatorURL(String navigatorHostName, Integer navigatorPort) {
-    return String.format("http://%s:%d/api/v8", navigatorHostName, navigatorPort);
+    return String.format("http://%s:%d/api/v%d", navigatorHostName, navigatorPort, API_VERSION);
   }
 
   private static String generateMetadataParentURI(String navigatorHostName, Integer navigatorPort) {
-    return String.format("http://%s:%d/api/v8/metadata/plugin", navigatorHostName, navigatorPort);
+    return String.format("http://%s:%d/api/v%d/metadata/plugin", navigatorHostName, navigatorPort, API_VERSION);
   }
 
   private static Integer getNavigatorPort(Integer navigatorPort) {
@@ -99,6 +100,10 @@ public class NavigatorConfig {
   public String getMetadataParentURI() {
     return Strings.isNullOrEmpty(metadataParentURI) ?
       generateMetadataParentURI(navigatorHostName, getNavigatorPort(navigatorPort)) : metadataParentURI;
+  }
+
+  public Integer getAPIVersion() {
+    return API_VERSION;
   }
 
   public String getUsername() {
@@ -129,6 +134,7 @@ public class NavigatorConfig {
       .add("fileFormat", fileFormat)
       .add("navigatorURL", navigatorURL)
       .add("metadataParentURI", metadataParentURI)
+      .add("apiVersion", API_VERSION)
       .toString();
   }
 }
