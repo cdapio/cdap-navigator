@@ -24,7 +24,7 @@ import com.google.common.base.Strings;
  */
 public class NavigatorConfig {
 
-  private static final int API_VERSION = 9;
+  private static final int API_VERSION = 8;
   private static final int DEFAULT_NAVIGATOR_PORT = 7187;
   private static final String DEFAULT_NAVIGATOR_NAMESPACE = "CDAP";
   private static final String DEFAULT_FILE_FORMAT = "JSON";

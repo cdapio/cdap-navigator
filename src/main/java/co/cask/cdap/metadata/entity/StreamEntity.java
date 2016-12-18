@@ -21,6 +21,7 @@ import co.cask.cdap.proto.id.StreamId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
 import com.cloudera.nav.sdk.model.annotations.MClass;
+import com.cloudera.nav.sdk.model.annotations.MProperty;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
@@ -31,9 +32,17 @@ import com.cloudera.nav.sdk.model.entities.EntityType;
 public class StreamEntity extends Entity {
   private final StreamId streamId;
 
+  @MProperty
+  private final String metaClassName;
+
   public StreamEntity(StreamId streamId) {
     this.streamId = streamId;
+    this.metaClassName = "streamMetaClassName";
     setName(streamId.toString());
+  }
+
+  public String getMetaClassName() {
+    return metaClassName;
   }
 
   @Override

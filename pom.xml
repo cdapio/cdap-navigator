@@ -31,7 +31,7 @@
     <app.main.class>co.cask.cdap.metadata.NavigatorApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cdap.version>4.0.0-SNAPSHOT</cdap.version>
-    <navigator.client.version>1.1</navigator.client.version>
+    <navigator.client.version>1.0</navigator.client.version>
     <commons.codec.version>1.4</commons.codec.version>
     <commons.net.version>3.1</commons.net.version>
     <httpcomponents.client.version>4.2.5</httpcomponents.client.version>
