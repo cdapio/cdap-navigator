@@ -21,6 +21,7 @@ import co.cask.cdap.proto.id.ApplicationId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
 import com.cloudera.nav.sdk.model.annotations.MClass;
+import com.cloudera.nav.sdk.model.annotations.MProperty;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
@@ -31,9 +32,17 @@ import com.cloudera.nav.sdk.model.entities.EntityType;
 public class ApplicationEntity extends Entity {
   private final ApplicationId appId;
 
+  @MProperty
+  private final String metaClassName;
+
   public ApplicationEntity(ApplicationId appId) {
     this.appId = appId;
+    this.metaClassName = "applicationMetaClassName";
     setName(appId.toString());
+  }
+
+  public String getMetaClassName() {
+    return metaClassName;
   }
 
   @Override

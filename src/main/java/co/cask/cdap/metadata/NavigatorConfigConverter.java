@@ -17,6 +17,7 @@
 package co.cask.cdap.metadata;
 
 import co.cask.cdap.metadata.config.NavigatorConfig;
+import com.cloudera.nav.sdk.client.ClientConfigFactory;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
 import com.google.common.collect.ImmutableMap;
 
@@ -29,14 +30,14 @@ public class NavigatorConfigConverter {
 
   public static Map<String, Object> convert(NavigatorConfig navigatorConfig) {
     return ImmutableMap.<String, Object>builder()
-      .put("application_url", navigatorConfig.getApplicationURL())
-      .put("file_format", navigatorConfig.getFileFormat())
-      .put("navigator_url", navigatorConfig.getNavigatorURL())
-      .put("metadata_parent_uri", navigatorConfig.getMetadataParentURI())
-      .put("username", navigatorConfig.getUsername())
-      .put("password", navigatorConfig.getPassword())
-      .put("namespace", navigatorConfig.getNamespace())
-      .put("autocommit", Boolean.toString(navigatorConfig.getAutocommit()))
+      .put(ClientConfigFactory.APP_URL, navigatorConfig.getApplicationURL())
+      .put(ClientConfigFactory.FILE_FORMAT, navigatorConfig.getFileFormat())
+      .put(ClientConfigFactory.NAV_URL, navigatorConfig.getNavigatorURL())
+      .put(ClientConfigFactory.METADATA_URI, navigatorConfig.getMetadataParentURI())
+      .put(ClientConfigFactory.USERNAME, navigatorConfig.getUsername())
+      .put(ClientConfigFactory.PASSWORD, navigatorConfig.getPassword())
+      .put(ClientConfigFactory.NAMESPACE, navigatorConfig.getNamespace())
+      .put(ClientConfigFactory.AUTOCOMMIT, Boolean.toString(navigatorConfig.getAutocommit()))
       .build();
   }
 

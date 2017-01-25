@@ -17,24 +17,31 @@
 package co.cask.cdap.metadata.entity;
 
 import co.cask.cdap.proto.id.StreamViewId;
+import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
+import com.cloudera.nav.sdk.model.annotations.MClass;
+import com.cloudera.nav.sdk.model.annotations.MProperty;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
 /**
  * CDAP StreamView {@link Entity}
  */
+@MClass(model = "cdap_streamview_entity")
 public class StreamViewEntity extends Entity {
   private final StreamViewId streamViewId;
 
+  @MProperty
+  private final String metaClassName;
+
   public StreamViewEntity(StreamViewId streamViewId) {
     this.streamViewId = streamViewId;
+    this.metaClassName = "streamviewMetaClassName";
     setName(streamViewId.toString());
   }
 
-  @Override
-  public String generateId() {
-    return null;
+  public String getMetaClassName() {
+    return metaClassName;
   }
 
   @Override
@@ -45,5 +52,10 @@ public class StreamViewEntity extends Entity {
   @Override
   public EntityType getEntityType() {
     return EntityType.TABLE;
+  }
+
+  @Override
+  public String generateId() {
+    return MD5IdGenerator.generateIdentity(streamViewId.toString());
   }
 }
