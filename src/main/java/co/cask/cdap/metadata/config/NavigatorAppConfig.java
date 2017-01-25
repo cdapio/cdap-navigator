@@ -25,18 +25,18 @@ import co.cask.cdap.metadata.NavigatorApp;
 public class NavigatorAppConfig extends Config {
 
   private final NavigatorConfig navigatorConfig;
-  private final AuditKafkaConfig auditKafkaConfig;
+  private final AuditLogConfig auditLogConfig;
 
-  public NavigatorAppConfig(NavigatorConfig navigatorConfig, AuditKafkaConfig auditKafkaConfig) {
+  public NavigatorAppConfig(NavigatorConfig navigatorConfig, AuditLogConfig auditLogConfig) {
     this.navigatorConfig = navigatorConfig;
-    this.auditKafkaConfig = auditKafkaConfig;
+    this.auditLogConfig = auditLogConfig;
   }
 
   public NavigatorConfig getNavigatorConfig() {
     return navigatorConfig;
   }
 
-  public AuditKafkaConfig getAuditKafkaConfig() {
-    return auditKafkaConfig;
+  public AuditLogConfig getAuditLogConfig() {
+    return auditLogConfig;
   }
 }

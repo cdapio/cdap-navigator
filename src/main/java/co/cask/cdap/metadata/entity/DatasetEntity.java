@@ -21,6 +21,7 @@ import co.cask.cdap.proto.id.DatasetId;
 import com.cloudera.nav.sdk.model.MD5IdGenerator;
 import com.cloudera.nav.sdk.model.SourceType;
 import com.cloudera.nav.sdk.model.annotations.MClass;
+import com.cloudera.nav.sdk.model.annotations.MProperty;
 import com.cloudera.nav.sdk.model.entities.Entity;
 import com.cloudera.nav.sdk.model.entities.EntityType;
 
@@ -31,9 +32,17 @@ import com.cloudera.nav.sdk.model.entities.EntityType;
 public class DatasetEntity extends Entity {
   private final DatasetId datasetId;
 
+  @MProperty
+  private final String metaClassName;
+
   public DatasetEntity(DatasetId datasetId) {
     this.datasetId = datasetId;
+    this.metaClassName = "datasetMetaClassName";
     setName(datasetId.toString());
+  }
+
+  public String getMetaClassName() {
+    return metaClassName;
   }
 
   @Override
