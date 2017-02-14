@@ -20,7 +20,7 @@
 
   <groupId>co.cask.cdap.metadata</groupId>
   <artifactId>navigator</artifactId>
-  <version>0.4.0</version>
+  <version>0.6.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Navigator Metadata Application</name>
   <description>CDAP Application that subscribes to CDAP Metadata updates and pushes them to Cloudera Navigator</description>
