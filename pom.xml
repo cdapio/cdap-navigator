@@ -20,7 +20,7 @@
 
   <groupId>co.cask.cdap.metadata</groupId>
   <artifactId>navigator</artifactId>
-  <version>0.5.0</version>
+  <version>0.5.1</version>
   <packaging>jar</packaging>
   <name>Navigator Metadata Application</name>
   <description>CDAP Application that subscribes to CDAP Metadata updates and pushes them to Cloudera Navigator</description>
@@ -30,7 +30,7 @@
     <jee.version>7</jee.version>
     <app.main.class>co.cask.cdap.metadata.NavigatorApp</app.main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>4.1.0</cdap.version>
+    <cdap.version>4.1.1</cdap.version>
     <navigator.client.version>1.0</navigator.client.version>
     <commons.codec.version>1.4</commons.codec.version>
     <commons.net.version>3.1</commons.net.version>
