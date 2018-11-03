@@ -19,6 +19,8 @@ package co.cask.cdap.metadata;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.FlowletContext;
+import co.cask.cdap.api.metadata.Metadata;
+import co.cask.cdap.api.metadata.MetadataScope;
 import co.cask.cdap.metadata.config.NavigatorAppConfig;
 import co.cask.cdap.metadata.config.NavigatorConfig;
 import co.cask.cdap.metadata.entity.ApplicationEntity;
@@ -42,8 +44,6 @@ import co.cask.cdap.proto.id.EntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
-import co.cask.cdap.proto.metadata.Metadata;
-import co.cask.cdap.proto.metadata.MetadataScope;
 import com.cloudera.nav.sdk.client.NavigatorPlugin;
 import com.cloudera.nav.sdk.client.writer.ResultSet;
 import com.cloudera.nav.sdk.model.entities.Entity;
@@ -113,7 +113,7 @@ public final class NavigatorPublisher extends AbstractFlowlet {
       return;
     }
 
-    EntityId entityId = record.getEntityId();
+    EntityId entityId = EntityId.fromMetadataEntity(record.getEntity());
 
     // All the AuditPayloads will be of MetadataPayload since we skip other types of Audit messages
     MetadataPayload payload = (MetadataPayload) record.getPayload();
